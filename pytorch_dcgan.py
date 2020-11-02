@@ -7,8 +7,8 @@ import torch
 import torch.nn as nn
 import torch.nn.parallel
 import torch.backends.cudnn as cudnn
-import torch.optim as optim
-import torch.utils.data
+import torch.optim as optim #优化器
+import torch.utils.data #数据预处理
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
@@ -82,14 +82,15 @@ dataset = dset.ImageFolder(root=dataroot,
                            transform=transforms.Compose([
                                transforms.Resize(image_size),
                                transforms.CenterCrop(image_size), #中间区域进行裁剪
-                               transforms.ToTensor(),
-                               transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+                               transforms.ToTensor(),    #转为tensor
+                               transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),  #归一化
                            ]))
 # Create the dataloader创建数据处理程序
+#Dataloader（），一个可迭代的对象，将dataset返回的每一条数据样本拼接成一个batch，并提供多线程加速优化和数据打乱
 dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,
                                          shuffle=True, num_workers=workers)
 
-# Decide which device we want to run on决定我们要运行哪个设备
+# Decide which device we want to run on决定我们要运行哪个设备..gpu 或者 cpu
 device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
 
 # Plot some training images 绘制一些训练图像
@@ -100,7 +101,7 @@ plt.title("Training Images")
 plt.imshow(np.transpose(vutils.make_grid(real_batch[0].to(device)[:64], padding=2, normalize=True).cpu(), (1, 2, 0)))
 # plt.show()
 
-# custom weights initialization called on netG and netD调用自定义权重初始化
+# custom weights initialization called on netG and netD调用自定义权重初始化 ？？？
 def weights_init(m):
     classname = m.__class__.__name__
     if classname.find('Conv') != -1:
